@@ -1,0 +1,29 @@
+// =====================================================================
+// Measures – Home → Enter data → table "_Measures" → New measure
+// Format: Collection Rate = Percentage, 1 decimal.
+//         LKR measures    = Whole number, thousands separator.
+// =====================================================================
+
+Total Billed = SUM(Fees[Amount])
+
+Total Collected = SUM(Payments[AmountPaid])
+
+Collection Rate = DIVIDE([Total Collected], [Total Billed])
+
+Outstanding = CALCULATE(SUM(Fees[Balance]), Fees[Balance] > 0)
+
+Overdue Amount = CALCULATE(SUM(Fees[Balance]), Fees[Status] = "Overdue")
+
+Overdue Fees = CALCULATE(COUNTROWS(Fees), Fees[Status] = "Overdue")
+
+Students Overdue = CALCULATE(DISTINCTCOUNT(Fees[StudentID]), Fees[Status] = "Overdue")
+
+Exceptions = CALCULATE(COUNTROWS(Payments), Payments[Exception] <> "None")
+
+Exception Value = CALCULATE(SUM(Payments[AmountPaid]), Payments[Exception] <> "None")
+
+
+// ---------- Optional: dynamic page title for Page 2 ----------
+Overdue Title =
+"LKR " & FORMAT([Overdue Amount] / 1000000, "0.0") & "M overdue across "
+    & FORMAT([Students Overdue], "#,0") & " students"
